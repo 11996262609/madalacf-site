@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MADALA CF • CrossFit, Judô & Ginástica</title>
+    <meta name="description" content="Madala CF — CrossFit, Judô e Ginástica em Vila Gumercindo, SP. Agende sua aula experimental." />
+    <link rel="canonical" href="https://madalacf.com.br/" />
+
+    <!-- Ícones (coloque os arquivos em /public/img/) -->
+    <link rel="icon" href="/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+    <meta name="theme-color" content="#111111" />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://madalacf.com.br/" />
+    <meta property="og:title" content="MADALA CF • CrossFit, Judô & Ginástica" />
+    <meta property="og:description" content="Agende sua aula experimental." />
+    <meta property="og:image" content="/img/og-cover.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MADALA CF • CrossFit, Judô & Ginástica" />
+    <meta name="twitter:description" content="Agende sua aula experimental." />
+    <meta name="twitter:image" content="/img/og-cover.jpg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+    <!-- Google Calendar Appointment Scheduling begin -->
+    <link
+      href="https://calendar.google.com/calendar/scheduling-button-script.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://calendar.google.com/calendar/scheduling-button-script.js"
+      async
+    ></script>
+    <script>
+      (function () {
+        function loadBtn(targetId, label) {
+          var el = document.getElementById(targetId);
+          if (!el || !window.calendar || !calendar.schedulingButton) return;
+          calendar.schedulingButton.load({
+            url: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Ia65JtVBg0zZOihaPcN8AAU4DxProMlpgLLQnB2x1nEUDXU3En6Ptm7Ctvb8aUdmy_7AXbrbK?gv=true",
+            color: "#D50000",
+            label: label || "Agendar",
+            target: el,
+          });
+        }
+
+        window.addEventListener("load", function () {
+          loadBtn("gcal-header", "Agendar");
+          loadBtn("gcal-hero", "Agendar um compromisso");
+          loadBtn("gcal-card-crossfit", "Agendar");
+          loadBtn("gcal-card-judo", "Agendar");
+        });
+      })();
+    </script>
+    <!-- end Google Calendar Appointment Scheduling -->
+  </body>
+</html>
+
+<style>
+  :root {
+    --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.03'/></svg>");
+  }
+</style>
