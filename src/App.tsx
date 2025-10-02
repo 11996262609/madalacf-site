@@ -182,41 +182,94 @@ function BookingModal({
           referrerPolicy="no-referrer-when-downgrade"
           className="h-[70vh] w-full rounded-3xl bg-white"
         />
+        
       </div>
     </div>
   );
 }
+// ====== PARTE 1: Card pequeno (3x4) para redes sociais ======
+      type SocialCardProps = {
+        title: string;     // Ex.: "Madala CF"
+        subtitle: string;  // Ex.: "Instagram" / "Facebook"
+        href: string;      // URL do perfil
+        bgClass?: string;  // Classe opcional de fundo (gradiente/cor)
+      };
+
+      function SocialCard({ title, subtitle, href, bgClass }: SocialCardProps) {
+        return (
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="snap-center shrink-0 w-[60vw] sm:w-[46vw] md:w-auto md:shrink md:snap-none"
+            aria-label={`${subtitle}: ${title}`}
+          >
+            <div
+              className={[
+                // tamanho 3x4 (pequeno) + cantos arredondados
+                "aspect-[3/4] rounded-2xl overflow-hidden",
+                // base
+                "border border-zinc-600/40 bg-zinc-800/70",
+                "shadow-[0_12px_30px_-12px_rgba(0,0,0,.6)]",
+                // layout interno
+                "p-4 flex flex-col justify-between transition hover:scale-[1.01]",
+                bgClass || "",
+              ].join(" ")}
+            >
+              <div className="text-xs uppercase tracking-wide text-zinc-300/90">
+                {subtitle}
+              </div>
+
+              <div className="mt-1 text-lg font-semibold text-white leading-snug">
+                {title}
+              </div>
+
+              <div className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-white/90">
+                Abrir
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        );
+      }
+
+
+
+
+
 
 /* =================== SEÇÃO DE PLANOS =================== */
-function PlansSection({ whats }: { whats: string }) {
-  const CAL_URL =
-    "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Ia65JtVBg0zZOihaPcN8AAU4DxProMlpgLLQnB2x1nEUDXU3En6Ptm7Ctvb8aUdmy_7AXbrbK?gv=true";
-  const CAL_EMBED = `${CAL_URL}&embed=true`;
+      function PlansSection({ whats }: { whats: string }) {
+        const CAL_URL =
+          "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Ia65JtVBg0zZOihaPcN8AAU4DxProMlpgLLQnB2x1nEUDXU3En6Ptm7Ctvb8aUdmy_7AXbrbK?gv=true";
+        const CAL_EMBED = `${CAL_URL}&embed=true`;
 
-  const [open, setOpen] = useState(false);
-  const [url, setUrl] = useState<string | null>(null);
+        const [open, setOpen] = useState(false);
+        const [url, setUrl] = useState<string | null>(null);
 
-  const openBooking = (u: string) => {
-    setUrl(u);
-    setOpen(true);
-  };
-  const closeBooking = () => {
-    setOpen(false);
-    setUrl(null);
-  };
+        const openBooking = (u: string) => {
+          setUrl(u);
+          setOpen(true);
+        };
+        const closeBooking = () => {
+          setOpen(false);
+          setUrl(null);
+        };
 
-  return (
-    <section id="treinos" className="mx-auto max-w-6xl px-4 py-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-white">Treinos & Planos</h2>
+        return (
+          <section id="treinos" className="mx-auto max-w-6xl px-4 py-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-white">Treinos & Planos</h2>
 
-      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-        <div className="reveal reveal-delay-0">
-          <TiltCard
-            title="CrossFit"
-            desc="Estamos abertos de segunda à sexta-feira das 6h às 21h. Sábados das 10h às 12h."
-            cta={{ label: "Agendar", onClick: () => openBooking(CAL_EMBED) }}
-          />
-        </div>
+            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+              <div className="reveal reveal-delay-0">
+                <TiltCard
+                  title="CrossFit"
+                  desc="Estamos abertos de segunda à sexta-feira das 6h às 21h. Sábados das 10h às 12h."
+                  cta={{ label: "Agendar", onClick: () => openBooking(CAL_EMBED) }}
+                />
+              </div>
 
         <div className="reveal reveal-delay-1">
           <TiltCard
@@ -243,47 +296,128 @@ function PlansSection({ whats }: { whats: string }) {
         </div>
       </div>
 
+          {/* ===== Redes Sociais ===== */}
+          <h3 className="mt-12 text-xl font-bold text-white">Redes sociais</h3>
+
+          <div className="relative mt-4">
+            {/* Gradientes de borda (indicam mais conteúdo no mobile) */}
+            <div className="pointer-events-none md:hidden absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-zinc-950 to-transparent" />
+            <div className="pointer-events-none md:hidden absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-zinc-950 to-transparent" />
+
+            {/* Setas (só no mobile) */}
+            <button
+              type="button"
+              aria-label="Ver card anterior"
+              onClick={() => scrollSocials(-1)}
+              className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              aria-label="Ver próximo card"
+              onClick={() => scrollSocials(1)}
+              className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+              </svg>
+            </button>
+
+            {/* Carrossel no mobile / Grid no desktop */}
+            <div
+              ref={socialsRef}
+              className="
+                flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
+                md:grid md:grid-cols-4 md:gap-5 md:overflow-visible
+              "
+              aria-label="Redes sociais Madala"
+            >
+              {SOCIALS.map((s) => (
+                <SocialCard key={s.href} {...s} />
+              ))}
+            </div>
+          </div>
       {/* Modal com iframe do Google Calendar */}
       <BookingModal open={open} url={url} onClose={closeBooking} />
     </section>
   );
 }
 
-/* =================== APP =================== */
-export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+        // === PARTE 2: dados + helpers do carrossel de redes ===
+        const socialsRef = React.useRef<HTMLDivElement | null>(null);
+        const scrollSocials = (dir: 1 | -1) => {
+          const el = socialsRef.current;
+          if (!el) return;
+          el.scrollBy({ left: dir * Math.round(el.clientWidth * 0.85), behavior: "smooth" });
+        };
 
-  useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 4000);
-    return () => clearTimeout(t);
-  }, []);
+        const SOCIALS: SocialCardProps[] = [
+          {
+            title: "Madala CF",
+            subtitle: "Instagram",
+            href: "https://www.instagram.com/madalacf/",
+            bgClass: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+          },
+          {
+            title: "Madala Performance",
+            subtitle: "Instagram",
+            href: "https://www.instagram.com/madalaperformance/",
+            bgClass: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+          },
+          {
+            title: "Projeto Social Madala Para Todos",
+            subtitle: "Instagram",
+            href: "https://www.instagram.com/projetosocialmadalaparatodos/",
+            bgClass: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+          },
+          {
+            title: "Madala CF",
+            subtitle: "Facebook",
+            href: "https://www.facebook.com/madalacf/?locale=pt_BR",
+            bgClass: "bg-[#1877F2]",
+          },
+        ];
 
-  const whats = `https://wa.me/${CFG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-    CFG.whatsMsg
-  )}`;
-const carouselRef = useRef<HTMLDivElement>(null);
 
-    function scrollCarousel(dir: 1 | -1) {
+
+    /* =================== APP =================== */
+    export default function App() {
+      const [showSplash, setShowSplash] = useState(true);
+
+      useEffect(() => {
+      const t = setTimeout(() => setShowSplash(false), 4000);
+      return () => clearTimeout(t);
+      }, []);
+
+      const whats = `https://wa.me/${CFG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
+      CFG.whatsMsg
+      )}`;
+      const carouselRef = useRef<HTMLDivElement>(null);
+
+      function scrollCarousel(dir: 1 | -1) {
       const el = carouselRef.current;
       if (!el) return;
       const amount = Math.round(el.clientWidth * 0.85); // ~85% da largura visível
       el.scrollBy({ left: dir * amount, behavior: "smooth" });
     }
 
-  return (
-    <main
+    return (
+      <main
       className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden pb-28 md:pb-24"
       style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom))" }}
-    >
+      >
       <MotionStyles />
 
       {/* ===== SPLASH: logo que sobe e some ===== */}
       {showSplash && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950 animate-slide-up-splash">
-          <img
-            src="/img/Urso.gif"
-            alt="Logo Madala CrossFit"
-            className="h-40 md:h-48 object-contain"
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950 animate-slide-up-splash">
+      <img
+        src="/img/Urso.gif"
+        alt="Logo Madala CrossFit"
+        className="h-40 md:h-48 object-contain"
           />
         </div>
       )}
@@ -457,6 +591,7 @@ const carouselRef = useRef<HTMLDivElement>(null);
         </div>
 
       </section>
+      
 
       {/* PLANOS (cards com tilt) */}
       <PlansSection whats={whats} />
@@ -491,6 +626,10 @@ const carouselRef = useRef<HTMLDivElement>(null);
           </div>
         </div>
       </footer>
+      
+
+
+
     </main>
   );
 }
