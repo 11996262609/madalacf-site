@@ -54,13 +54,16 @@ function MotionStyles() {
       }
 
       /* ===== splash sobe e some ===== */
-      @keyframes slideUpSplash {
-        0%   { transform: translateY(0);     opacity: 1; }
-        100% { transform: translateY(-100%); opacity: 0; }
+      @keyframes splashInHoldOut {
+        100%   { filter: blur(12px); opacity: 50; transform: translateY(0) }
+        40%  { filter: blur(0);    opacity: 50; transform: translateY(0) }
+        75%  { filter: blur(0);    opacity: 50; transform: translateY(0) }   /* segura visível */
+        100% { filter: blur(0);    opacity: 50; transform: translateY(-1px) } /* sai suave */
       }
-      .animate-slide-up-splash {
-        animation: slideUpSplash 5s ease-in-out forwards;
+      .animate-splash-in-hold-out {
+        animation: splashInHoldOut 3.2s ease-out forwards;
       }
+
 
       /* ===== esconder a barra de rolagem no carrossel (mobile) ===== */
       .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -70,19 +73,17 @@ function MotionStyles() {
 }
 
 /* =================== CARD COM TILT 3D =================== */
+type Cta = { label: string; href?: string; external?: boolean; onClick?: () => void };
+
 type TiltCardProps = {
   title: string;
   desc: string;
-  cta?: {
-    label: string;
-    href?: string;
-    external?: boolean;
-    onClick?: () => void;
-  };
+  cta?: Cta;          // legado: 1 CTA
+  ctas?: Cta[];       // novo: N CTAs
   badge?: string;
 };
 
-function TiltCard({ title, desc, cta, badge }: TiltCardProps) {
+function TiltCard({ title, desc, cta, ctas, badge }: TiltCardProps) {
   const [style, setStyle] = React.useState<React.CSSProperties>({});
 
   function onMove(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -97,17 +98,24 @@ function TiltCard({ title, desc, cta, badge }: TiltCardProps) {
   }
   function onLeave() {
     setStyle({
-      transform:
-        "perspective(800px) rotateX(0) rotateY(0) translateY(0) scale(1)",
+      transform: "perspective(800px) rotateX(0) rotateY(0) translateY(0) scale(1)",
     });
   }
+
+  // Padroniza: se vier só "cta", transforma em array
+  const ctasToRender: Cta[] = ctas && ctas.length ? ctas : (cta ? [cta] : []);
 
   return (
     <div
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={style}
-      className="group relative rounded-3xl border border-zinc-500 bg-zinc-800 p-2 transition will-change-transform"
+      className="
+        group relative rounded-3xl border border-zinc-500 bg-zinc-800 p-4
+        transition will-change-transform
+        flex flex-col justify-between
+        min-h-[220px]   /* <-- altura mínima igual pra todos */
+      "
     >
       <div
         className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition group-hover:opacity-100"
@@ -116,37 +124,47 @@ function TiltCard({ title, desc, cta, badge }: TiltCardProps) {
             "radial-gradient(600px circle at 50% 50%, rgba(255,255,255,.06), transparent 40%)",
         }}
       />
-      {badge && (
-        <span className="mb-2 inline-block rounded-full bg-red-600 px-2.5 py-1 text-xs font-semibold text-white">
-          {badge}
-        </span>
-      )}
-      <div className="font-semibold text-white">{title}</div>
-      <p className="mt-1 text-sm text-zinc-400">{desc}</p>
 
-      {cta &&
-        (cta.onClick ? (
-          <button
-            onClick={cta.onClick}
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
-          >
-            {cta.label}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
-            </svg>
-          </button>
-        ) : (
-          <a
-            href={cta.href!}
-            {...(cta.external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
-          >
-            {cta.label}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
-            </svg>
-          </a>
-        ))}
+      <div>
+        {badge && (
+          <span className="mb-2 inline-block rounded-full bg-red-600 px-2.5 py-1 text-xs font-semibold text-white">
+            {badge}
+          </span>
+        )}
+        <div className="font-semibold text-white">{title}</div>
+        <p className="mt-1 text-sm text-zinc-300">{desc}</p>
+      </div>
+
+      {ctasToRender.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {ctasToRender.map((c, i) =>
+            c.onClick ? (
+              <button
+                key={`cta-btn-${i}`}
+                onClick={c.onClick}
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+              >
+                {c.label}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+                </svg>
+              </button>
+            ) : (
+              <a
+                key={`cta-a-${i}`}
+                href={c.href!}
+                {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+              >
+                {c.label}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+                </svg>
+              </a>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -189,6 +207,10 @@ function BookingModal({
 }
 
 
+
+
+
+
 /* =================== SEÇÃO DE PLANOS =================== */
 function PlansSection({ whats }: { whats: string }) {
   const CAL_URL =
@@ -209,15 +231,17 @@ function PlansSection({ whats }: { whats: string }) {
 
   return (
     <section id="treinos" className="mx-auto max-w-6xl px-4 py-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-white">Treinos & Planos</h2>
+      <h2 className="text-2xl md:text-5xl font-bold text-white">Treinos & Planos</h2>
 
-      {/* Grid dos 4 cards principais */}
-      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-1">
         <div className="reveal reveal-delay-0">
           <TiltCard
             title="CrossFit"
             desc="Estamos abertos de segunda à sexta-feira das 6h às 21h. Sábados das 10h às 12h."
-            cta={{ label: "Agendar", onClick: () => openBooking(CAL_EMBED) }}
+            ctas={[
+              { label: "Agendar", onClick: () => openBooking(CAL_EMBED) },
+              { label: "Falar no WhatsApp", href: whats, external: true },
+            ]}
           />
         </div>
 
@@ -225,7 +249,10 @@ function PlansSection({ whats }: { whats: string }) {
           <TiltCard
             title="Aulas de Judô"
             desc="Toda quarta-feira às 21h."
-            cta={{ label: "Agendar", onClick: () => openBooking(CAL_EMBED) }}
+            ctas={[
+              { label: "Agendar", onClick: () => openBooking(CAL_EMBED) },
+              { label: "Falar no WhatsApp", href: whats, external: true },
+            ]}
           />
         </div>
 
@@ -233,7 +260,10 @@ function PlansSection({ whats }: { whats: string }) {
           <TiltCard
             title="Ginástica"
             desc="Quartas e sextas às 19h."
-            cta={{ label: "Falar no WhatsApp", href: whats, external: true }}
+            ctas={[
+              { label: "Agendar", onClick: () => openBooking(CAL_EMBED) },
+              { label: "Falar no WhatsApp", href: whats, external: true },
+            ]}
           />
         </div>
 
@@ -241,147 +271,21 @@ function PlansSection({ whats }: { whats: string }) {
           <TiltCard
             title="Levantamento de Peso Olímpico"
             desc="Todas as sextas às 19h."
-            cta={{ label: "Saiba mais", href: "#contato" }}
+            ctas={[
+              { label: "Agendar", onClick: () => openBooking(CAL_EMBED) },
+              { label: "Falar no WhatsApp", href: whats, external: true },
+              // Se quiser manter também um terceiro botão:
+              // { label: "Saiba mais", href: "#contato" },
+            ]}
           />
         </div>
       </div>
 
-      {/* ===== Redes sociais — carrossel com imagens ===== */}
-      <h3 className="mt-10 text-xl font-bold text-white">Redes sociais</h3>
-
-      <div
-        className="
-          mt-4
-          flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
-          md:grid md:grid-cols-4 md:gap-6 md:overflow-visible
-        "
-        aria-label="Redes sociais Madala"
-      >
-        {/* 1) Instagram Madala CF */}
-        <a
-          href="https://www.instagram.com/madalacf/"
-          target="_blank"
-          rel="noreferrer"
-          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
-        >
-          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
-            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
-              <img
-                src="/img/madalacf.jpg"
-                alt="Instagram @madalacf"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-white">Madala CF</div>
-                <p className="text-xs text-zinc-300">@madalacf</p>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                Abrir
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-
-        {/* 2) Instagram Madala Performance */}
-        <a
-          href="https://www.instagram.com/madalaperformance/"
-          target="_blank"
-          rel="noreferrer"
-          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
-        >
-          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
-            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
-              <img
-                src="/img/performance.jpg"
-                alt="Instagram @madalaperformance"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-white">Madala Performance</div>
-                <p className="text-xs text-zinc-300">@madalaperformance</p>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                Abrir
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-
-        {/* 3) Instagram Projeto Social */}
-        <a
-          href="https://www.instagram.com/projetosocialmadalaparatodos/"
-          target="_blank"
-          rel="noreferrer"
-          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
-        >
-          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
-            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
-              <img
-                src="/img/projeto.jpg"
-                alt="Instagram @projetosocialmadalaparatodos"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-white">Projeto Social Madala Para Todos</div>
-                <p className="text-xs text-zinc-300">@projetosocialmadalaparatodos</p>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                Abrir
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-
-        {/* 4) Facebook Madala CF */}
-        <a
-          href="https://www.facebook.com/madalacf/?locale=pt_BR"
-          target="_blank"
-          rel="noreferrer"
-          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
-        >
-          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
-            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
-              <img
-                src="/img/facebook.jpg"
-                alt="Facebook Madala CF"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold text-white">Madala CF</div>
-                <p className="text-xs text-zinc-300">Página oficial no Facebook</p>
-              </div>
-              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                Abrir
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      {/* Modal com iframe do Google Calendar */}
+      {/* Modal com iframe do Google Calendar (inalterado) */}
       <BookingModal open={open} url={url} onClose={closeBooking} />
     </section>
   );
 }
-
-
-
 
 /* =================== APP =================== */
 export default function App() {
@@ -413,14 +317,62 @@ const carouselRef = useRef<HTMLDivElement>(null);
 
       {/* ===== SPLASH: logo que sobe e some ===== */}
       {showSplash && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950 animate-slide-up-splash">
-          <img
-            src="/img/Urso.gif"
-            alt="Logo Madala CrossFit"
-            className="h-40 md:h-48 object-contain"
-          />
+        <div
+          className="fixed inset-0 z-[150] flex items-center justify-center bg-zinc-950 animate-splash-in-hold-out"
+          onAnimationEnd={() => setShowSplash(false)}
+          aria-hidden="true"
+        >
+          <div
+            className="
+              relative aspect-square
+              w-[52vw] max-w-[320px]
+              md:w-[34vw] md:max-w-[460px]
+              lg:max-w-[520px]
+              rounded-full overflow-hidden
+              ring-1 ring-white/15 ring-offset-2 ring-offset-zinc-950
+              shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)]
+              bg-zinc-950
+            "
+          >
+            <img
+              src="/img/urso.gif"
+              alt="Logo Madala CrossFit"
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{
+                objectPosition: '50% 46%',
+                transform: 'scale(1.06)',
+              }}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </div>
         </div>
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
 
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur">
@@ -501,14 +453,18 @@ const carouselRef = useRef<HTMLDivElement>(null);
         <div className="mx-auto max-w-6xl px-4 py-12 md:py-1">
           <div className="text-center">
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-wide">
-              DESEMPENHO • FORÇA • RESISTÊNCIA
+              DESEMPENHO • FORÇA • RESISTÊNCIA • MUDANÇAS
             </h1>
           </div>
 
           {/* BARRA ROLANTE (telejornal) */}
-          <div className="w-full overflow-hidden border-y border-red-600 bg-zinc-900 py-2 mt-5">
+          <div className="
+            w-screen
+            mx-[calc(50%-50vw)]   /* puxa para fora e centraliza, ignorando o padding do pai */
+            overflow-hidden border-y border-red-600 bg-zinc-900 py-2 mt-5
+          ">
             <div className="marquee-track text-red-500 font-semibold text-sm md:text-base tracking-wider">
-              {CFG.texto_teleprompt.repeat(2)}
+              {CFG.texto_teleprompt.repeat(4)}
             </div>
           </div>
         </div>
@@ -552,7 +508,7 @@ const carouselRef = useRef<HTMLDivElement>(null);
             aria-label="Galeria de cards: fotos, vídeo e mapa"
           >
           {/* Card 1 — IMAGEM */}
-          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-160 md:shrink md:snap-none">
             <img
               src="/img/mada_treinamento.jpg"
               alt="Treinamento Madala CrossFit"
@@ -574,7 +530,7 @@ const carouselRef = useRef<HTMLDivElement>(null);
           </figure>
 
           {/* Card 3 — MAPS (usa wrapper para manter mesma altura e raio) */}
-          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-115 md:shrink md:snap-none">
             <div className="mx-auto h-[580px] w-full rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.9844739509986!2d-46.62814792378698!3d-23.604889763194443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5bb6f69f4ef7%3A0x14594a08a9df8bf5!2sMadala%20CF!5e0!3m2!1spt-BR!2sbr!4v1759288545144!5m2!1spt-BR!2sbr"
@@ -594,6 +550,146 @@ const carouselRef = useRef<HTMLDivElement>(null);
 
       {/* PLANOS (cards com tilt) */}
       <PlansSection whats={whats} />
+
+
+
+
+      {/* ===== Redes sociais — carrossel com imagens ===== */}
+      <section className="mx-auto max-w-6xl px-4">
+        {/* limite e centralização */}
+        <h3 className="mt-12 text-3xl md:text-4xl font-extrabold text-white tracking-wide">
+          Redes Sociais
+        </h3>
+
+        <div
+          className="
+            mt-4 -mx-2 px-2
+            flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar
+            md:mx-0 md:px-0
+            md:grid md:overflow-visible
+            md:[grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]
+            md:gap-4
+            lg:[grid-template-columns:repeat(4,minmax(0,1fr))]  /* fixa 4 colunas em telas grandes */
+          "
+          aria-label="Redes sociais Madala"
+        >
+          {/* 1) Instagram Madala CF */}
+          <a
+            href="https://www.instagram.com/madalacf/"
+            target="_blank"
+            rel="noreferrer"
+            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+          >
+            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+              <div className="flex-1 w-full overflow-hidden rounded-xl">
+                <img
+                  src="/img/madalacf.jpg"
+                  alt="Instagram @madalacf"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-white">Madala CF</div>
+                  <p className="text-xs text-zinc-300">@madalacf</p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                  Abrir
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          {/* 2) Instagram Madala Performance */}
+          <a
+            href="https://www.instagram.com/madalaperformance/"
+            target="_blank"
+            rel="noreferrer"
+            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+          >
+            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+              <div className="flex-1 w-full overflow-hidden rounded-xl">
+                <img
+                  src="/img/performance.jpg"
+                  alt="Instagram @madalaperformance"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-white">Madala Performance</div>
+                  <p className="text-xs text-zinc-300">@madalaperformance</p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                  Abrir
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          {/* 3) Instagram Projeto Social */}
+          <a
+            href="https://www.instagram.com/projetosocialmadalaparatodos/"
+            target="_blank"
+            rel="noreferrer"
+            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+          >
+            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+              <div className="flex-1 w-full overflow-hidden rounded-xl">
+                <img
+                  src="/img/projeto.jpg"
+                  alt="Instagram @projetosocialmadalaparatodos"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-white">Projeto Social Madala Para Todos</div>
+                  <p className="text-xs text-zinc-300">@projetosocialmadalaparatodos</p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                  Abrir
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          {/* 4) Facebook Madala CF */}
+          <a
+            href="https://www.facebook.com/madalacf/?locale=pt_BR"
+            target="_blank"
+            rel="noreferrer"
+            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+          >
+            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+              <div className="flex-1 w-full overflow-hidden rounded-xl">
+                <img
+                  src="/img/facebook.jpg"
+                  alt="Facebook Madala CF"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-white">Madala CF</div>
+                  <p className="text-xs text-zinc-300">Página oficial no Facebook</p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                  Abrir
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
 
       {/* FOOTER */}
       <footer
@@ -625,9 +721,7 @@ const carouselRef = useRef<HTMLDivElement>(null);
           </div>
         </div>
       </footer>
-
-
-
+      
 
 
 
