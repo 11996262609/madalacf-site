@@ -552,14 +552,39 @@ const carouselRef = useRef<HTMLDivElement>(null);
       <PlansSection whats={whats} />
 
 
-
-
       {/* ===== Redes sociais — carrossel com imagens ===== */}
       <section className="mx-auto max-w-6xl px-4">
+
+
         {/* limite e centralização */}
         <h3 className="mt-12 text-3xl md:text-4xl font-extrabold text-white tracking-wide">
           Redes Sociais
         </h3>
+        <div className="relative mt-4"> 
+        </div>
+
+          {/* Setas (só mobile) */}
+          <button
+            type="button"
+            aria-label="Ver card anterior"
+            onClick={() => scrollCarousel(-1)}
+            className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Ver próximo card"
+            onClick={() => scrollCarousel(1)}
+            className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+            </svg>
+          </button>
 
         <div
           className="
