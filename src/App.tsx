@@ -308,6 +308,15 @@ const carouselRef = useRef<HTMLDivElement>(null);
       el.scrollBy({ left: dir * amount, behavior: "smooth" });
     }
 
+const socialCarouselRef = useRef<HTMLDivElement>(null);
+function scrollSocial(dir: 1 | -1) {
+  const el = socialCarouselRef.current;
+  if (!el) return;
+  const amount = Math.round(el.clientWidth * 0.85);
+  el.scrollBy({ left: dir * amount, behavior: "smooth" });
+}
+
+
   return (
     <main
       className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden pb-28 md:pb-24"
@@ -551,169 +560,176 @@ const carouselRef = useRef<HTMLDivElement>(null);
       {/* PLANOS (cards com tilt) */}
       <PlansSection whats={whats} />
 
+        {/* ===== Redes sociais — carrossel com imagens ===== */}
+        <section className="mx-auto max-w-6xl px-4">
+          <h3 className="mt-12 text-3xl md:text-4xl font-extrabold text-white tracking-wide">
+            Redes Sociais
+          </h3>
 
-      {/* ===== Redes sociais — carrossel com imagens ===== */}
-      <section className="mx-auto max-w-6xl px-4">
+          <div className="relative mt-4">
+            {/* Gradientes nas bordas (só mobile) */}
+            <div className="pointer-events-none md:hidden absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-zinc-950 to-transparent" />
+            <div className="pointer-events-none md:hidden absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-zinc-950 to-transparent" />
 
+            {/* Setas (só mobile) */}
+            <button
+              type="button"
+              aria-label="Ver card anterior"
+              onClick={() => scrollSocial(-1)}
+              className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
 
-        {/* limite e centralização */}
-        <h3 className="mt-12 text-3xl md:text-4xl font-extrabold text-white tracking-wide">
-          Redes Sociais
-        </h3>
-        <div className="relative mt-4"> 
-        </div>
+            <button
+              type="button"
+              aria-label="Ver próximo card"
+              onClick={() => scrollSocial(1)}
+              className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+              </svg>
+            </button>
 
-          {/* Setas (só mobile) */}
-          <button
-            type="button"
-            aria-label="Ver card anterior"
-            onClick={() => scrollCarousel(-1)}
-            className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            aria-label="Ver próximo card"
-            onClick={() => scrollCarousel(1)}
-            className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-            </svg>
-          </button>
-
-        <div
-          className="
-            mt-4 -mx-2 px-2
-            flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar
-            md:mx-0 md:px-0
-            md:grid md:overflow-visible
-            md:[grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]
-            md:gap-4
-            lg:[grid-template-columns:repeat(4,minmax(0,1fr))]  /* fixa 4 colunas em telas grandes */
-          "
-          aria-label="Redes sociais Madala"
-        >
-          {/* 1) Instagram Madala CF */}
-          <a
-            href="https://www.instagram.com/madalacf/"
-            target="_blank"
-            rel="noreferrer"
-            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
-          >
-            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
-              <div className="flex-1 w-full overflow-hidden rounded-xl">
-                <img
-                  src="/img/madalacf.jpg"
-                  alt="Instagram @madalacf"
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-white">Madala CF</div>
-                  <p className="text-xs text-zinc-300">@madalacf</p>
+            {/* Carrossel / Grid */}
+            <div
+              ref={socialCarouselRef}
+              className="
+                mt-4 -mx-2 px-2
+                flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar
+                md:mx-0 md:px-0
+                md:grid md:overflow-visible
+                md:[grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]
+                md:gap-4
+                lg:[grid-template-columns:repeat(4,minmax(0,1fr))]
+              "
+              aria-label="Redes sociais Madala"
+            >
+              {/* 1) Instagram Madala CF */}
+              <a
+                href="https://www.instagram.com/madalacf/"
+                target="_blank"
+                rel="noreferrer"
+                className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+              >
+                <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+                  <div className="flex-1 w-full overflow-hidden rounded-xl">
+                    <img
+                      src="/img/madalacf.jpg"
+                      alt="Instagram @madalacf"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-white">Madala CF</div>
+                      <p className="text-xs text-zinc-300">@madalacf</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                      Abrir
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                    </span>
+                  </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                  Abrir
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
+              </a>
 
-          {/* 2) Instagram Madala Performance */}
-          <a
-            href="https://www.instagram.com/madalaperformance/"
-            target="_blank"
-            rel="noreferrer"
-            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
-          >
-            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
-              <div className="flex-1 w-full overflow-hidden rounded-xl">
-                <img
-                  src="/img/performance.jpg"
-                  alt="Instagram @madalaperformance"
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-white">Madala Performance</div>
-                  <p className="text-xs text-zinc-300">@madalaperformance</p>
+              {/* 2) Instagram Madala Performance */}
+              <a
+                href="https://www.instagram.com/madalaperformance/"
+                target="_blank"
+                rel="noreferrer"
+                className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+              >
+                <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+                  <div className="flex-1 w-full overflow-hidden rounded-xl">
+                    <img
+                      src="/img/performance.jpg"
+                      alt="Instagram @madalaperformance"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-white">Madala Performance</div>
+                      <p className="text-xs text-zinc-300">@madalaperformance</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                      Abrir
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                    </span>
+                  </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                  Abrir
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
+              </a>
 
-          {/* 3) Instagram Projeto Social */}
-          <a
-            href="https://www.instagram.com/projetosocialmadalaparatodos/"
-            target="_blank"
-            rel="noreferrer"
-            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
-          >
-            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
-              <div className="flex-1 w-full overflow-hidden rounded-xl">
-                <img
-                  src="/img/projeto.jpg"
-                  alt="Instagram @projetosocialmadalaparatodos"
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-white">Projeto Social Madala Para Todos</div>
-                  <p className="text-xs text-zinc-300">@projetosocialmadalaparatodos</p>
+              {/* 3) Instagram Projeto Social */}
+              <a
+                href="https://www.instagram.com/projetosocialmadalaparatodos/"
+                target="_blank"
+                rel="noreferrer"
+                className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+              >
+                <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+                  <div className="flex-1 w-full overflow-hidden rounded-xl">
+                    <img
+                      src="/img/projeto.jpg"
+                      alt="Instagram @projetosocialmadalaparatodos"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-white">Projeto Social Madala Para Todos</div>
+                      <p className="text-xs text-zinc-300">@projetosocialmadalaparatodos</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                      Abrir
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                    </span>
+                  </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                  Abrir
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                </span>
-              </div>
-            </div>
-          </a>
+              </a>
 
-          {/* 4) Facebook Madala CF */}
-          <a
-            href="https://www.facebook.com/madalacf/?locale=pt_BR"
-            target="_blank"
-            rel="noreferrer"
-            className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
-          >
-            <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
-              <div className="flex-1 w-full overflow-hidden rounded-xl">
-                <img
-                  src="/img/facebook.jpg"
-                  alt="Facebook Madala CF"
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-white">Madala CF</div>
-                  <p className="text-xs text-zinc-300">Página oficial no Facebook</p>
+              {/* 4) Facebook Madala CF */}
+              <a
+                href="https://www.facebook.com/madalacf/?locale=pt_BR"
+                target="_blank"
+                rel="noreferrer"
+                className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none px-2"
+              >
+                <div className="group mx-auto w-full h-[360px] rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] flex flex-col">
+                  <div className="flex-1 w-full overflow-hidden rounded-xl">
+                    <img
+                      src="/img/facebook.jpg"
+                      alt="Facebook Madala CF"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-white">Madala CF</div>
+                      <p className="text-xs text-zinc-300">Página oficial no Facebook</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                      Abrir
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                    </span>
+                  </div>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
-                  Abrir
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-                </span>
-              </div>
+              </a>
             </div>
-          </a>
-        </div>
+          </div>
+        </section>
+
+ 
+      <section className="mx-auto max-w-6xl px-4 pb-28 md:pb-32">
+      {/* ...seu conteúdo... */}
       </section>
 
       {/* FOOTER */}
