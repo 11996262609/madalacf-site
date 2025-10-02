@@ -417,40 +417,42 @@ const carouselRef = useRef<HTMLDivElement>(null);
             "
             aria-label="Galeria de cards: fotos, vídeo e mapa"
           >
-            {/* Card 1 — IMAGEM */}
-            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
-              <img
-                src="/img/mada_treinamento.jpg"
-                alt="Treinamento Madala CrossFit"
-                className="mx-auto h-[520px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] md:h-[520px]"
-                loading="lazy"
-              />
-            </figure>
+          {/* Card 1 — IMAGEM */}
+          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+            <img
+              src="/img/mada_treinamento.jpg"
+              alt="Treinamento Madala CrossFit"
+              className="mx-auto h-[580px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] md:h-[580px]"
+              loading="lazy"
+            />
+          </figure>
 
-            {/* Card 2 — VÍDEO */}
-            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
-              <video
-                src="/videos/rotina_madala.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="mx-auto h-[580px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.75)] md:h-[580px]"
-              />
-            </figure>
+          {/* Card 2 — VÍDEO (referência de tamanho) */}
+          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+            <video
+              src="/videos/rotina_madala.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="mx-auto h-[580px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.75)] md:h-[580px]"
+            />
+          </figure>
 
-            {/* Card 3 — MAPS */}
-            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+          {/* Card 3 — MAPS (usa wrapper para manter mesma altura e raio) */}
+          <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
+            <div className="mx-auto h-[580px] w-full rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.9844739509986!2d-46.62814792378698!3d-23.604889763194443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5bb6f69f4ef7%3A0x14594a08a9df8bf5!2sMadala%20CF!5e0!3m2!1spt-BR!2sbr!4v1759288545144!5m2!1spt-BR!2sbr"
-                className="mx-auto h-[520px] w-full rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]"
+                className="h-full w-full"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Mapa da Madala CF"
               />
-            </figure>
+            </div>
+          </figure>
           </div>
         </div>
 
