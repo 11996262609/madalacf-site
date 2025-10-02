@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 const CFG = {
   nome: "MADALA CROSSFIT",
   titulo: "CrossFit & Judô & Ginástica & Competições & Workshop & Seminários ",
-  whatsapp: "https://api.whatsapp.com/send/?phone=5511977181677&text&type=phone_number&app_absent=0",
+  whatsapp:
+    "https://api.whatsapp.com/send/?phone=5511977181677&text&type=phone_number&app_absent=0",
   whatsMsg: "Olá! Quero agendar um treino particular de CrossFit.",
   endereco: "Rua do Treino, 123 – São Paulo/SP",
   mapsExt: "https://www.google.com/maps/place/Rua+do+Treino,+123",
@@ -22,20 +23,23 @@ const CFG = {
 function MotionStyles() {
   return (
     <style>{`
-      @keyframes floatY { 
+      /* ===== flutuação suave ===== */
+      @keyframes floatY {
         0% { transform: translateY(0) }
         50% { transform: translateY(-6px) }
         100% { transform: translateY(0) }
       }
+
+      /* ===== revelar de baixo pra cima ===== */
       @keyframes fadeUp {
         from { opacity: 0; transform: translateY(12px) }
         to   { opacity: 1; transform: translateY(0) }
       }
       .reveal { animation: fadeUp .6s ease forwards; opacity: 0 }
-      .reveal-delay-0 { animation-delay: 5s }
-      .reveal-delay-1 { animation-delay: .55s }
-      .reveal-delay-2 { animation-delay: .2s }
-      .reveal-delay-3 { animation-delay: 1.99s }
+      .reveal-delay-0 { animation-delay: .15s }
+      .reveal-delay-1 { animation-delay: .35s }
+      .reveal-delay-2 { animation-delay: .55s }
+      .reveal-delay-3 { animation-delay: .75s }
 
       /* ===== marquee direita -> esquerda ===== */
       @keyframes marqueeX {
@@ -51,12 +55,16 @@ function MotionStyles() {
 
       /* ===== splash sobe e some ===== */
       @keyframes slideUpSplash {
-        0%   { transform: translateY(0);     opacity: ; }
-        100% { transform: translateY(-100%); opacity: 1; }
+        0%   { transform: translateY(0);     opacity: 1; }
+        100% { transform: translateY(-100%); opacity: 0; }
       }
       .animate-slide-up-splash {
-        animation: slideUpSplash 5.0s ease-in-out forwards;
+        animation: slideUpSplash 5s ease-in-out forwards;
       }
+
+      /* ===== esconder a barra de rolagem no carrossel (mobile) ===== */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     `}</style>
   );
 }
@@ -65,7 +73,12 @@ function MotionStyles() {
 type TiltCardProps = {
   title: string;
   desc: string;
-  cta?: { label: string; href?: string; external?: boolean; onClick?: () => void };
+  cta?: {
+    label: string;
+    href?: string;
+    external?: boolean;
+    onClick?: () => void;
+  };
   badge?: string;
 };
 
@@ -111,40 +124,50 @@ function TiltCard({ title, desc, cta, badge }: TiltCardProps) {
       <div className="font-semibold text-white">{title}</div>
       <p className="mt-1 text-sm text-zinc-400">{desc}</p>
 
-          {cta && (
-      cta.onClick ? (
-        <button
-          onClick={cta.onClick}
-          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
-        >
-          {cta.label}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
-          </svg>
-        </button>
-      ) : (
-        <a
-          href={cta.href!}
-          {...(cta.external ? { target: "_blank", rel: "noreferrer" } : {})}
-          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
-        >
-          {cta.label}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
-          </svg>
-        </a>
-      )
-    )}
-  </div>
+      {cta &&
+        (cta.onClick ? (
+          <button
+            onClick={cta.onClick}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+          >
+            {cta.label}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
+            </svg>
+          </button>
+        ) : (
+          <a
+            href={cta.href!}
+            {...(cta.external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+          >
+            {cta.label}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 3l7 7-1.41 1.41L16 8.83V21h-2V8.83l-3.59 3.58L9 10l7-7z" />
+            </svg>
+          </a>
+        ))}
+    </div>
   );
 }
 
+/* =================== MODAL DE AGENDAMENTO =================== */
 function BookingModal({
-  open, url, onClose
-}: { open: boolean; url: string | null; onClose: () => void }) {
+  open,
+  url,
+  onClose,
+}: {
+  open: boolean;
+  url: string | null;
+  onClose: () => void;
+}) {
   if (!open || !url) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+      role="dialog"
+      aria-modal="true"
+    >
       <div className="relative w-full max-w-2xl">
         <button
           onClick={onClose}
@@ -164,19 +187,23 @@ function BookingModal({
   );
 }
 
-
-
 /* =================== SEÇÃO DE PLANOS =================== */
 function PlansSection({ whats }: { whats: string }) {
   const CAL_URL =
     "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Ia65JtVBg0zZOihaPcN8AAU4DxProMlpgLLQnB2x1nEUDXU3En6Ptm7Ctvb8aUdmy_7AXbrbK?gv=true";
-  const CAL_EMBED = `${CAL_URL}&embed=true`; // ajuda no carregamento em iframe
+  const CAL_EMBED = `${CAL_URL}&embed=true`;
 
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState<string | null>(null);
 
-  const openBooking = (u: string) => { setUrl(u); setOpen(true); };
-  const closeBooking = () => { setOpen(false); setUrl(null); };
+  const openBooking = (u: string) => {
+    setUrl(u);
+    setOpen(true);
+  };
+  const closeBooking = () => {
+    setOpen(false);
+    setUrl(null);
+  };
 
   return (
     <section id="treinos" className="mx-auto max-w-6xl px-4 py-12">
@@ -222,23 +249,25 @@ function PlansSection({ whats }: { whats: string }) {
   );
 }
 
-    /* =================== APP =================== */
-    export default function App() {
-      const [showSplash, setShowSplash] = useState(true);
+/* =================== APP =================== */
+export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
 
-      useEffect(() => {
-        // Tempo que o splash fica visível antes de subir (ms)
-        const t = setTimeout(() => setShowSplash(false), 4000);
-        return () => clearTimeout(t);
-      }, []);
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 4000);
+    return () => clearTimeout(t);
+  }, []);
 
-      const whats = `https://wa.me/${CFG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-        CFG.whatsMsg
-      )}`;
+  const whats = `https://wa.me/${CFG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
+    CFG.whatsMsg
+  )}`;
 
-    return (
-      <main className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-hidden">
-        <MotionStyles />
+  return (
+    <main
+      className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden pb-28 md:pb-24"
+      style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom))" }}
+    >
+      <MotionStyles />
 
       {/* ===== SPLASH: logo que sobe e some ===== */}
       {showSplash && (
@@ -246,17 +275,18 @@ function PlansSection({ whats }: { whats: string }) {
           <img
             src="/img/slogan.jpg"
             alt="Logo Madala CrossFit"
-            className="h-90 md:h-80 object-contain"
+            className="h-40 md:h-48 object-contain"
           />
         </div>
       )}
 
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <span className="text-xl tracking-wider font-semibold">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+          <span className="max-w-[60vw] truncate text-base font-semibold md:max-w-none md:text-xl">
             CF • {CFG.nome}
           </span>
+
           <nav className="hidden gap-6 text-sm md:flex">
             <a href="#treinos" className="hover:text-white">
               Treinos
@@ -265,19 +295,22 @@ function PlansSection({ whats }: { whats: string }) {
               Sobre
             </a>
             <a href="#contato" className="hover:text-white">
-              
+              Contato
             </a>
           </nav>
 
-          {/* Botão do Google Calendar */}
-          <div id="gcal-header" className="min-w-[180px]"></div>
+          <a
+            href="#treinos"
+            className="shrink-0 whitespace-nowrap rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 md:px-4 md:text-base"
+          >
+            Agendar
+          </a>
         </div>
       </header>
 
-
       {/* HERO */}
       <section className="relative">
-        {/* BG imagem + gradiente; a variável --noise é opcional no index.html */}
+        {/* BG imagem + gradiente */}
         <div
           className="absolute inset-0 -z-10"
           style={{
@@ -292,11 +325,13 @@ function PlansSection({ whats }: { whats: string }) {
           style={{ backgroundImage: "var(--noise)" }}
         />
 
-                <div className="w-full flex justify-center mt-2">
+        {/* Slogan */}
+        <div className="w-full flex justify-center mt-3 md:mt-4">
           <img
-            src="/img/slogan.jpg"  // coloque a imagem em /public/img/
+            src="/img/slogan.jpg"
             alt="Logo Madala CrossFit"
-            className="h-10 md:h-50 object-contain"
+            className="w-[68vw] max-w-[380px] md:w-[42vw] md:max-w-[560px] lg:max-w-[640px] h-auto object-contain"
+            loading="lazy"
           />
         </div>
 
@@ -304,9 +339,7 @@ function PlansSection({ whats }: { whats: string }) {
           <div className="text-center">
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-wide">
               DESEMPENHO • FORÇA • RESISTÊNCIA
-              
             </h1>
-
           </div>
 
           {/* BARRA ROLANTE (telejornal) */}
@@ -316,33 +349,39 @@ function PlansSection({ whats }: { whats: string }) {
             </div>
           </div>
 
-          {/* AÇÕES */}
- 
-
-
-          {/* 3 FOTOS */}
-          <div className="mt-10 grid grid-cols-1 items-end gap-6 md:grid-cols-3">
-            <figure className="hidden md:block">
+          {/* 3 CARDS — carrossel no mobile, grid no desktop */}
+          <div
+            className="
+              mt-10
+              flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
+              md:grid md:grid-cols-3 md:gap-6 md:overflow-visible
+            "
+            aria-label="Galeria de cards: fotos, vídeo e mapa"
+          >
+            {/* Card 1 — IMAGEM */}
+            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
               <img
                 src="/img/mada_treinamento.jpg"
                 alt="Treinamento Madala CrossFit"
-                className="mx-auto h-[520px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] animate-[floatY_5s_ease-in-out_infinite]"
+                className="mx-auto h-[520px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)] md:h-[520px]"
                 loading="lazy"
               />
             </figure>
 
-            <figure>
+            {/* Card 2 — VÍDEO */}
+            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
               <video
                 src="/videos/rotina_madala.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="mx-auto h-[580px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.75)] animate-[floatY_4s_ease-in-out_infinite]"
+                className="mx-auto h-[580px] w-auto rounded-2xl object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,.75)] md:h-[580px]"
               />
             </figure>
 
-            <figure className="hidden md:block">
+            {/* Card 3 — MAPS */}
+            <figure className="snap-center shrink-0 w-[88vw] sm:w-[70vw] md:w-auto md:shrink md:snap-none">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.9844739509986!2d-46.62814792378698!3d-23.604889763194443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5bb6f69f4ef7%3A0x14594a08a9df8bf5!2sMadala%20CF!5e0!3m2!1spt-BR!2sbr!4v1759288545144!5m2!1spt-BR!2sbr"
                 className="mx-auto h-[520px] w-full rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]"
@@ -350,7 +389,8 @@ function PlansSection({ whats }: { whats: string }) {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+                title="Mapa da Madala CF"
+              />
             </figure>
           </div>
         </div>
@@ -384,12 +424,13 @@ function PlansSection({ whats }: { whats: string }) {
       {/* FOOTER */}
       <footer
         id="contato"
-        className="fixed bottom-0 inset-x-2 z-30 border-t border-zinc-800 bg-zinc-950/85 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/75"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}  // iPhone safe area
+        className="fixed bottom-0 inset-x-0 z-30 border-t border-zinc-800 bg-zinc-950/85 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/75 min-h-[64px]"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-2 py-0.2 text-sm text-zinc-400 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} {CFG.nome}. {CFG.titulo}</p>
-
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-3 py-2 text-sm text-zinc-400 md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} {CFG.nome}. {CFG.titulo}
+          </p>
           <div className="flex flex-wrap gap-3">
             <a
               href={whats}
