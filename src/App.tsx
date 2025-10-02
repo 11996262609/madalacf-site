@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 /* =================== CONFIG =================== */
 const CFG = {
@@ -261,6 +261,14 @@ export default function App() {
   const whats = `https://wa.me/${CFG.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
     CFG.whatsMsg
   )}`;
+const carouselRef = useRef<HTMLDivElement>(null);
+
+    function scrollCarousel(dir: 1 | -1) {
+      const el = carouselRef.current;
+      if (!el) return;
+      const amount = Math.round(el.clientWidth * 0.85); // ~85% da largura visível
+      el.scrollBy({ left: dir * amount, behavior: "smooth" });
+    }
 
   return (
     <main
@@ -273,7 +281,7 @@ export default function App() {
       {showSplash && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950 animate-slide-up-splash">
           <img
-            src="/img/slogan.jpg"
+            src="/img/Urso.gif"
             alt="Logo Madala CrossFit"
             className="h-40 md:h-48 object-contain"
           />
@@ -326,14 +334,35 @@ export default function App() {
         />
 
         {/* Slogan */}
-        <div className="w-full flex justify-center mt-3 md:mt-4">
-          <img
-            src="/img/slogan.jpg"
-            alt="Logo Madala CrossFit"
-            className="w-[68vw] max-w-[380px] md:w-[42vw] md:max-w-[560px] lg:max-w-[640px] h-auto object-contain"
-            loading="lazy"
-          />
-        </div>
+          {/* Slogan — círculo centrado e ajustado */}
+          <div className="w-full flex justify-center mt-6 md:mt-10">
+            <div
+              className="
+                relative aspect-square
+                w-[52vw] max-w-[320px]          /* ↓ reduzir tamanho no mobile */
+                md:w-[34vw] md:max-w-[460px]    /* ↓ reduzir no desktop */
+                lg:max-w-[520px]
+                rounded-full overflow-hidden
+                ring-1 ring-white/15 ring-offset-2 ring-offset-zinc-950
+                shadow-[0_12px_40px_-12px_rgba(0,0,0,.7)]
+                bg-zinc-950
+              "
+            >
+              <img
+                src="/img/urso.gif"
+                alt="Logo Madala CrossFit"
+                className="absolute inset-0 h-full w-full object-cover"
+                /* ajuste fino: centralizar e dar um leve zoom */
+                style={{
+                  objectPosition: '50% 46%',   // mexa 44–52% até ficar perfeito
+                  transform: 'scale(1.06)',    // 1.00–1.12 conforme precisar
+                }}
+                decoding="async"
+                fetchPriority="high"
+              />
+            </div>
+          </div>
+
 
         <div className="mx-auto max-w-6xl px-4 py-12 md:py-1">
           <div className="text-center">
@@ -348,11 +377,41 @@ export default function App() {
               {CFG.texto_teleprompt.repeat(2)}
             </div>
           </div>
+        </div>
+        
+        {/* 3 CARDS — carrossel no mobile, grid no desktop (com setas) */}
+        <div className="relative mt-10">
+          {/* Gradientes de borda (indicam que há mais conteúdo) */}
+          <div className="pointer-events-none md:hidden absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-zinc-950 to-transparent" />
+          <div className="pointer-events-none md:hidden absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-zinc-950 to-transparent" />
 
-          {/* 3 CARDS — carrossel no mobile, grid no desktop */}
+          {/* Setas (só mobile) */}
+          <button
+            type="button"
+            aria-label="Ver card anterior"
+            onClick={() => scrollCarousel(-1)}
+            className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Ver próximo card"
+            onClick={() => scrollCarousel(1)}
+            className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-zinc-900/70 p-2 ring-1 ring-white/20 backdrop-blur hover:bg-zinc-900/90 active:scale-95"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+            </svg>
+          </button>
+
+          {/* Carrossel / Grid */}
           <div
+            ref={carouselRef}
             className="
-              mt-10
               flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
               md:grid md:grid-cols-3 md:gap-6 md:overflow-visible
             "
@@ -394,28 +453,7 @@ export default function App() {
             </figure>
           </div>
         </div>
-      </section>
 
-      {/* BARRA DE VALORES */}
-      <section className="border-y border-zinc-800 bg-zinc-900/40">
-        <div className="mx-auto max-w-6xl px-4 py-6">
-          <ul className="flex flex-wrap items-center justify-center gap-3 text-xs md:text-sm">
-            {[
-              "Ajuste de carga",
-              "Mobilidade",
-              "Metcon",
-              "Técnica de LPO",
-              "Recuperação",
-            ].map((t) => (
-              <li
-                key={t}
-                className="rounded-full border border-zinc-700 px-3 py-1 text-zinc-300"
-              >
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
       </section>
 
       {/* PLANOS (cards com tilt) */}
