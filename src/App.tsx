@@ -189,10 +189,6 @@ function BookingModal({
 }
 
 
-
-
-
-
 /* =================== SEÇÃO DE PLANOS =================== */
 function PlansSection({ whats }: { whats: string }) {
   const CAL_URL =
@@ -215,6 +211,7 @@ function PlansSection({ whats }: { whats: string }) {
     <section id="treinos" className="mx-auto max-w-6xl px-4 py-12">
       <h2 className="text-2xl md:text-3xl font-bold text-white">Treinos & Planos</h2>
 
+      {/* Grid dos 4 cards principais */}
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
         <div className="reveal reveal-delay-0">
           <TiltCard
@@ -249,11 +246,142 @@ function PlansSection({ whats }: { whats: string }) {
         </div>
       </div>
 
+      {/* ===== Redes sociais — carrossel com imagens ===== */}
+      <h3 className="mt-10 text-xl font-bold text-white">Redes sociais</h3>
+
+      <div
+        className="
+          mt-4
+          flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
+          md:grid md:grid-cols-4 md:gap-6 md:overflow-visible
+        "
+        aria-label="Redes sociais Madala"
+      >
+        {/* 1) Instagram Madala CF */}
+        <a
+          href="https://www.instagram.com/madalacf/"
+          target="_blank"
+          rel="noreferrer"
+          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
+        >
+          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
+            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
+              <img
+                src="/img/madalacf.jpg"
+                alt="Instagram @madalacf"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-semibold text-white">Madala CF</div>
+                <p className="text-xs text-zinc-300">@madalacf</p>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                Abrir
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
+        {/* 2) Instagram Madala Performance */}
+        <a
+          href="https://www.instagram.com/madalaperformance/"
+          target="_blank"
+          rel="noreferrer"
+          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
+        >
+          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
+            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
+              <img
+                src="/img/performance.jpg"
+                alt="Instagram @madalaperformance"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-semibold text-white">Madala Performance</div>
+                <p className="text-xs text-zinc-300">@madalaperformance</p>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                Abrir
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
+        {/* 3) Instagram Projeto Social */}
+        <a
+          href="https://www.instagram.com/projetosocialmadalaparatodos/"
+          target="_blank"
+          rel="noreferrer"
+          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
+        >
+          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
+            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
+              <img
+                src="/img/projeto.jpg"
+                alt="Instagram @projetosocialmadalaparatodos"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-semibold text-white">Projeto Social Madala Para Todos</div>
+                <p className="text-xs text-zinc-300">@projetosocialmadalaparatodos</p>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                Abrir
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+
+        {/* 4) Facebook Madala CF */}
+        <a
+          href="https://www.facebook.com/madalacf/?locale=pt_BR"
+          target="_blank"
+          rel="noreferrer"
+          className="snap-center shrink-0 w-[82vw] sm:w-[68vw] md:w-auto md:shrink md:snap-none"
+        >
+          <div className="group mx-auto w-full rounded-2xl border border-zinc-500 bg-zinc-800 p-3 shadow-[0_20px_60px_-15px_rgba(0,0,0,.7)]">
+            <div className="aspect-[3/4] w-full overflow-hidden rounded-xl">
+              <img
+                src="/img/facebook.jpg"
+                alt="Facebook Madala CF"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-semibold text-white">Madala CF</div>
+                <p className="text-xs text-zinc-300">Página oficial no Facebook</p>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-500">
+                Abrir
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
       {/* Modal com iframe do Google Calendar */}
       <BookingModal open={open} url={url} onClose={closeBooking} />
     </section>
   );
 }
+
+
+
 
 /* =================== APP =================== */
 export default function App() {
@@ -497,7 +625,9 @@ const carouselRef = useRef<HTMLDivElement>(null);
           </div>
         </div>
       </footer>
-      
+
+
+
 
 
 
