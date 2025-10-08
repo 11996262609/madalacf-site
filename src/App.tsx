@@ -423,14 +423,14 @@ function scrollSocial(dir: 1 | -1) {
               loop
               playsInline
               preload="auto"
-              poster="/videos/video_plano_fundo.mp4"          // (opcional) mostra algo antes do vídeo carregar
+              poster="/videos/capa_fundo_site.mp4"          // (opcional) mostra algo antes do vídeo carregar
               onLoadedData={() => console.log("🎬 vídeo carregado")}
               onError={(e) => console.error("❌ erro no vídeo", e)}
               controls={false}
               disablePictureInPicture
               style={{ objectPosition: "50% 50%" }}  // ajuste fino do foco
             >
-              <source src="/videos/video_plano_fundo.mp4"  type="video/mp4"  />
+              <source src="/videos/capa_fundo_site.mp4"  type="video/mp4"  />
             </video>
 
             {/* tinta verde (opcional) */}
