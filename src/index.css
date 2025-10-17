@@ -1,25 +1,30 @@
 ﻿@import "tailwindcss";
 
+/* ================= Animations ================ */
 @keyframes slideUp {
-  from {
-    transform: translateY(100px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(100px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
-
-.animate-slide-up {
-  animation: slideUp 0.8s ease-out forwards;
-}
+.animate-slide-up { animation: slideUp 0.8s ease-out forwards; }
 
 @keyframes slideUpSplash {
   0%   { transform: translateY(0);     opacity: 1; }
   100% { transform: translateY(-100%); opacity: 0; }
 }
-.animate-slide-up-splash {
-  animation: slideUpSplash 1.4s ease-in-out forwards;
+.animate-slide-up-splash { animation: slideUpSplash 1.4s ease-in-out forwards; }
+
+/* ============== Sizes (Hero vs Logo) ============== */
+:root {
+  --heroHeight: clamp(400px, 34vw, 520px);
+  --logoSize:  clamp(400px, 34vw, 520px);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --heroHeight: clamp(350px, 34vw, 420px);
+    --logoSize:  clamp(255px, 21.25vw, 331px); /* ✅ corrigido */
+  }
+
+  
 }
 
